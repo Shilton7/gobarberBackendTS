@@ -3,6 +3,7 @@ import path from 'path';
 
 import { getRepository } from 'typeorm';
 import UserModel from '../models/User';
+import AppError from '../erros/AppError';
 import uploadConfig from '../config/upload';
 
 interface RequestDTO {
@@ -20,7 +21,7 @@ class UpdateUserAvatarService {
     const user = await usersRepository.findOne(user_id);
 
     if (!user) {
-      throw Error('Only authenticated users can change.');
+      throw new AppError('Only authenticated users can change.', 401);
     }
 
     // Deletar avatar atual

@@ -1,6 +1,7 @@
 import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
+import AppError from '../erros/AppError';
 
 import authConfig from '../config/auth';
 import UserModel from '../models/User';
@@ -24,13 +25,13 @@ class AuthenticateUserService {
     });
 
     if (!user) {
-      throw Error('Incorrect email/password combination.');
+      throw new AppError('Incorrect email/password combination.', 401);
     }
 
     const passwordMacthed = await compare(password, user.password);
 
     if (!passwordMacthed) {
-      throw Error('Incorrect email/password combination.');
+      throw new AppError('Incorrect email/password combination.', 401);
     }
 
     const token = sign({}, authConfig.jwt.secret, {
